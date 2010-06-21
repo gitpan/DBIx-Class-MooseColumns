@@ -22,7 +22,9 @@ MANIFEST			This list of files
 META.yml
 README
 t/00-load.t
+t/01-warnings.t
 t/10-add_column.t
+t/11-inflated_column.t
 t/etc/schema.pl
 t/lib/TestSchema.pm
 t/lib/TestSchema/Result/Artist.pm

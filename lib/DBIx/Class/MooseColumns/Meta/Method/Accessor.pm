@@ -16,7 +16,7 @@ around _inline_has => sub {
   my ($orig, $self, $instance) = (shift, shift, @_);
 
   my $attr = $self->associated_attribute;
-  if ($attr->has__dbix_class_moosecolumns_column_info) {
+  if ($attr->has_dbix_class_moosecolumns_column_info) {
     my ($slot_name) = $attr->slots;
 
     return sprintf q[%s->has_column_loaded("%s")], $instance, quotemeta($slot_name);
@@ -30,10 +30,13 @@ around _inline_get => sub {
   my ($orig, $self, $instance) = (shift, shift, @_);
 
   my $attr = $self->associated_attribute;
-  if ($attr->has__dbix_class_moosecolumns_column_info) {
+  if ($attr->has_dbix_class_moosecolumns_column_info) {
     my ($slot_name) = $attr->slots;
 
-    return sprintf q[%s->get_column("%s")], $instance, quotemeta($slot_name);
+    return sprintf q[%s->%s("%s")], $instance,
+      ($attr->is_dbix_class_moosecolumns_inflated_column
+        ? 'get_inflated_column' : 'get_column'),
+      quotemeta($slot_name);
   }
   else {
     return $self->$orig(@_);
@@ -44,10 +47,13 @@ around _inline_store => sub {
   my ($orig, $self, $instance, $value) = (shift, shift, @_);
 
   my $attr = $self->associated_attribute;
-  if ($attr->has__dbix_class_moosecolumns_column_info) {
+  if ($attr->has_dbix_class_moosecolumns_column_info) {
     my ($slot_name) = $attr->slots;
 
-    return sprintf q[%s->set_column("%s", "%s")], $instance, quotemeta($slot_name), $value;
+    return sprintf q[%s->%s("%s", "%s")], $instance,
+      ($attr->is_dbix_class_moosecolumns_inflated_column
+        ? 'set_inflated_column' : 'set_column'),
+      quotemeta($slot_name), $value;
   }
   else {
     return $self->$orig(@_);
@@ -64,7 +70,7 @@ around _inline_get_old_value_for_trigger => sub {
   my ($orig, $self, $instance) = (shift, shift, @_);
 
   my $attr = $self->associated_attribute;
-  if ($attr->has__dbix_class_moosecolumns_column_info) {
+  if ($attr->has_dbix_class_moosecolumns_column_info) {
     return '' unless $attr->has_trigger;
 
     return

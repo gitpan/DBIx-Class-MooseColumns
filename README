@@ -3,7 +3,7 @@ NAME
     as attribute options
 
 VERSION
-    Version 0.09
+    Version 0.10
 
 SYNOPSIS
       package MyApp::Schema::Result::Artist;
@@ -13,6 +13,8 @@ SYNOPSIS
       use namespace::autoclean;
 
       extends 'DBIx::Class::Core';
+
+      __PACKAGE__->table('artist');
 
       has id => (
         isa => 'Int',
@@ -42,7 +44,9 @@ SYNOPSIS
         is  => 'rw',
       );
 
-      __PACKAGE__->meta->make_immutable(inline_constructor => 0);
+      __PACKAGE__->set_primary_key('id');
+
+      __PACKAGE__->meta->make_immutable( inline_constructor => 0 );
 
       1;
 
@@ -57,6 +61,17 @@ DESCRIPTION
     Class::Accessor::Grouped-generated accessor methods under the hood) with
     the Moose-generated accessor methods so that you can use more of the
     wonderful powers of Moose (eg. type constraints, triggers, ...).
+
+    *Note:* "__PACKAGE__->table(...)" must go before the "has" stanzas (the
+    "table" in DBIx::Class::ResultSource is magic and does much more than
+    setting the table name, thus the "__PACKAGE__->add_column(...)" calls
+    that the "has" triggers won't work before that).
+
+    *Note:* "__PACKAGE__->set_primary_key(...)" and
+    "__PACKAGE__->add_unique_constraint(...)" calls must go after the "has"
+    stanzas (since they depend on the referred columns being registered via
+    "__PACKAGE__->add_column(...)" and that call is done when the "has"
+    runs).
 
 SEE ALSO
     DBIx::Class, Moose

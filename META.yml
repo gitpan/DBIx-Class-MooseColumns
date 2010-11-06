@@ -5,8 +5,9 @@ author:
 build_requires:
   ExtUtils::MakeMaker: 6.42
   FindBin: 0
-  MooseX::NonMoose: 0.08
+  MooseX::NonMoose: 0.16
   Path::Class: 0.16
+  Test::Aggregate::Nested: 0.363
   Test::DBIx::Class: 0.10
   Test::Deep: 0.103
   Test::Differences: 0.4801
@@ -15,7 +16,7 @@ build_requires:
 configure_requires:
   ExtUtils::MakeMaker: 6.42
 distribution_type: module
-generated_by: 'Module::Install version 0.93'
+generated_by: 'Module::Install version 1.00'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -27,9 +28,9 @@ no_index:
     - t
     - xt
 requires:
-  Moose: 0.92
+  Moose: 1.19
   namespace::autoclean: 0.09
 resources:
   license: http://dev.perl.org/licenses/
   repository: git://github.com/mendel/DBIx-Class-MooseColumns.git
-version: 0.10
+version: 0.11

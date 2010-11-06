@@ -5,9 +5,18 @@ use Moose;
 #use MooseX::NonMoose;
 use namespace::autoclean;
 
-use DBIx::Class::MooseColumns;
+use TestUtils::MakeInstanceMetaClassNonInlinableIf
+  $ENV{DBIC_MOOSECOLUMNS_NON_INLINABLE};
 
-extends 'DBIx::Class::Core';
+BEGIN {
+  if ($ENV{DBIC_MOOSECOLUMNS_SUBCLASS}) {
+    extends 'TestSchema::Result';
+  }
+  else {
+    eval q{ use DBIx::Class::MooseColumns; 1; } or die;
+    extends 'DBIx::Class::Core';
+  }
+}
 
 __PACKAGE__->load_components(qw/InflateColumn::DateTime/);
 
@@ -89,7 +98,9 @@ sub title
 __PACKAGE__->set_primary_key('artist_id');
 
 #TODO why does MooseX::NonMoose makes Test::DBIx::Class break?
-#__PACKAGE__->meta->make_immutable;
-__PACKAGE__->meta->make_immutable(inline_constructor => 0);
+#__PACKAGE__->meta->make_immutable
+#  if $ENV{DBIC_MOOSECOLUMNS_IMMUTABLE} && !$ENV{DBIC_MOOSECOLUMNS_NON_INLINABLE};
+__PACKAGE__->meta->make_immutable(inline_constructor => 0)
+  if $ENV{DBIC_MOOSECOLUMNS_IMMUTABLE} && !$ENV{DBIC_MOOSECOLUMNS_NON_INLINABLE};
 
 1;

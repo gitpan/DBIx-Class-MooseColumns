@@ -1,3 +1,8 @@
+agg-t/author/10-benchmark.t
+agg-t/user/01-warnings.t
+agg-t/user/02-role_application.t
+agg-t/user/10-add_column.t
+agg-t/user/11-inflated_column.t
 Changes
 inc/Module/AutoInstall.pm
 inc/Module/Install.pm
@@ -15,9 +20,9 @@ inc/Module/Install/Repository.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 lib/DBIx/Class/MooseColumns.pm
-lib/DBIx/Class/MooseColumns/Meta/Attribute.pm
-lib/DBIx/Class/MooseColumns/Meta/Attribute/DBICColumn.pm
-lib/DBIx/Class/MooseColumns/Meta/Attribute/DBICColumn/Inflated.pm
+lib/DBIx/Class/MooseColumns/Meta/Role/Attribute.pm
+lib/DBIx/Class/MooseColumns/Meta/Role/Attribute/DBICColumn.pm
+lib/DBIx/Class/MooseColumns/Meta/Role/Attribute/DBICColumn/Inflated.pm
 Makefile.PL
 MANIFEST			This list of files
 META.yml
@@ -34,7 +39,3 @@ t/lib/TestSchema.pm
 t/lib/TestSchema/Result.pm
 t/lib/TestSchema/Result/Artist.pm
 t/lib/TestUtils/MakeInstanceMetaClassNonInlinableIf.pm
-agg-t/user/01-warnings.t
-agg-t/user/11-inflated_column.t
-agg-t/user/10-add_column.t
-agg-t/author/10-benchmark.t

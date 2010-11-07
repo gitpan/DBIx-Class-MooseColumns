@@ -1,11 +1,11 @@
-package DBIx::Class::MooseColumns::Meta::Attribute::DBICColumn::Inflated;
+package DBIx::Class::MooseColumns::Meta::Role::Attribute::DBICColumn::Inflated;
 
 use Moose::Role;
 use namespace::autoclean;
 
 =head1 NAME
 
-DBIx::Class::MooseColumns::Meta::Attribute::DBICColumn - Attribute metaclass trait for DBIx::Class::MooseColumns for attributes that are inflated DBIC columns
+DBIx::Class::MooseColumns::Meta::Role::Attribute::DBICColumn - Attribute metaclass trait for DBIx::Class::MooseColumns for attributes that are inflated DBIC columns
 
 =cut
 
@@ -81,7 +81,35 @@ around clear_value => sub {
   #delete $instance->{_column_data}{$self->name}
   #return;
 
-  $instance->throw_excption($clearer_unimplemented_error_msg);
+  $instance->throw_exception($clearer_unimplemented_error_msg);
+};
+
+=head2 _set_initial_slot_value
+
+Overridden (wrapped with an C<around> method modifier) from
+L<Class::MOP::Attribute/_set_initial_slot_value>.
+
+Calls L<DBIx::Class::Row/set_column> to set the (deflated) column value.
+
+=cut
+
+around _set_initial_slot_value => sub {
+  my ($orig, $self, $meta_instance, $instance, $value) = (shift, shift, @_);
+
+  my $slot_name = $self->name;
+
+  return $instance->set_column($slot_name, $value)
+    unless $self->has_initializer;
+
+  my $callback = sub {
+    my $val = $self->_coerce_and_verify(shift, $instance);
+
+    return $instance->set_column($slot_name, $_[0])
+  };
+  
+  my $initializer = $self->initializer;
+
+  return $instance->$initializer($value, $callback, $self);
 };
 
 
@@ -148,7 +176,7 @@ around inline_clear => sub {
 
   #FIXME see comments at L</clear_value>
 
-  return sprintf q[%s->throw_excption(%s);],
+  return sprintf q[%s->throw_exception("%s");],
     $instance, $clearer_unimplemented_error_msg;
 };
 

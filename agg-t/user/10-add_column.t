@@ -13,6 +13,8 @@ use Test::DBIx::Class;
 
 fixtures_ok 'basic', 'installed the basic fixtures from configuration files';
 
+# tests for ->add_column() being called
+
 {
   throws_ok {
     Schema->resultset('Artist')->result_source->column_info('guess');
@@ -37,6 +39,8 @@ fixtures_ok 'basic', 'installed the basic fixtures from configuration files';
     );
   } "column_info of 'name' contains ('is_nullable' => 0)";
 }
+
+# tests for the reader/writer
 
 {
   my $artist1 = Schema->resultset('Artist')->find({ artist_id => 1 });
@@ -101,10 +105,110 @@ fixtures_ok 'basic', 'installed the basic fixtures from configuration files';
       undef
     );
   } "value returned by 'name' accessor is undef";
-
-  #FIXME other methods (predicate, clearer, ...)
-  #FIXME test Moose triggers
 }
+
+# tests for the predicate method
+
+{
+  my $artist1 = Schema->resultset('Artist')->find({ artist_id => 1 });
+
+  lives_and {
+    cmp_deeply(
+      $artist1->has_name,
+      bool(1)
+    );
+  } "'has_name' predicate returns true for a loaded column";
+
+  lives_ok {
+    $artist1 = Schema->resultset('Artist')->new({ artist_id => 1 });
+  } "'new' does not die";
+
+  lives_and {
+    cmp_deeply(
+      $artist1->has_name,
+      bool(0)
+    );
+  } "'has_name' predicate returns false for an uninitialized column";
+}
+
+# tests for the clearer method
+
+{
+  my $artist1 = Schema->resultset('Artist')->find({ artist_id => 1 });
+
+  TODO: {
+    local $TODO = "Currently the clearer is unimplemented";
+
+    lives_ok {
+      $artist1->clear_name;
+    } "'clear_name' does not die";
+
+    lives_and {
+      cmp_deeply(
+        $artist1->has_name,
+        bool(1)
+      );
+    } "'has_name' predicate returns true for a cleared column";
+  }
+}
+
+# tests for using the default value ('default' attribute option)
+
+{
+  my $artist1;
+  lives_ok {
+    $artist1 = Schema->resultset('Artist')->new({
+      artist_id => 1,
+    });
+  } "'new' does not die";
+
+  lives_and {
+    cmp_deeply(
+      $artist1->is_active,
+      1,
+    );
+  } "'is_active' accessor returns the default value";
+}
+
+# tests for the builder method
+
+{
+  my $artist1;
+  lives_ok {
+    $artist1 = Schema->resultset('Artist')->new({
+      artist_id => 1,
+      name      => 'John Lennon',
+    });
+  } "'new' does not die";
+
+  lives_and {
+    cmp_deeply(
+      $artist1->initials,
+      'JL'
+    );
+  } "'initials' accessor returns the value built by the builder";
+}
+
+# tests for the initializer method
+
+{
+  my $artist1;
+  lives_ok {
+    $artist1 = Schema->resultset('Artist')->new({
+      artist_id       => 1,
+      favourite_color => 'BLUE',
+    });
+  } "'new' does not die";
+
+  lives_and {
+    cmp_deeply(
+      $artist1->favourite_color,
+      'blue'
+    );
+  } "'favourite_color' accessor returns the value munged by the initializer";
+}
+
+# tests for custom accessor name
 
 {
   my $artist1 = Schema->resultset('Artist')->find({ artist_id => 1 });
@@ -153,5 +257,7 @@ fixtures_ok 'basic', 'installed the basic fixtures from configuration files';
     );
   } "value returned by 'title' method is undef";
 }
+
+#FIXME other methods/options (trigger, ...)
 
 done_testing;

@@ -1,8 +1,7 @@
 package TestSchema::Result::Artist;
 
 use Moose;
-#TODO why does MooseX::NonMoose makes Test::DBIx::Class break?
-#use MooseX::NonMoose;
+use MooseX::NonMoose;
 use namespace::autoclean;
 
 use TestUtils::MakeInstanceMetaClassNonInlinableIf
@@ -31,10 +30,13 @@ has artist_id => (
   },
 );
 
-# used for testing if ->add_column() works
+# used for testing if ->add_column() works, also for reader/writer, predicate,
+# clearer methods
 has name => (
   isa => 'Maybe[Str]',
   is  => 'rw',
+  predicate => 'has_name',
+  clearer   => 'clear_name',
   add_column => {
     is_nullable => 0,
   },
@@ -74,11 +76,53 @@ has address => (
 
 __PACKAGE__->add_column( address => {} );
 
+# used for testing if ->add_column() works (ie. not called on this attribute)
 has guess => (
   isa => 'Int',
   is  => 'ro',
   default => sub { int(rand 100)+1 },
 );
+
+# used to test the builder
+has initials => (
+  isa => 'Str',
+  is  => 'rw',
+  builder    => '_build_initials',
+  add_column => {
+  },
+);
+
+# used to test the default value
+has is_active => (
+  isa => 'Int',
+  is  => 'rw',
+  default => 1,
+  add_column => {
+  },
+);
+
+# used to test the initializer
+has favourite_color => (
+  isa => 'Maybe[Str]',
+  is  => 'rw',
+  initializer => '_initialize_favourite_color',
+  add_column => {
+  },
+);
+
+sub _build_initials
+{
+  my ($self) = (shift, @_);
+
+  return join "", map { uc $_ } ($self->name || "") =~ /(?:^| )(.)/g;
+}
+
+sub _initialize_favourite_color
+{
+  my ($self, $value, $setter, $attr) = (shift, @_);
+
+  $setter->(lc $value);
+}
 
 # silly example (better to do this with a trigger) but i couldn't invent
 # anything better :-)
@@ -97,10 +141,7 @@ sub title
 
 __PACKAGE__->set_primary_key('artist_id');
 
-#TODO why does MooseX::NonMoose makes Test::DBIx::Class break?
-#__PACKAGE__->meta->make_immutable
-#  if $ENV{DBIC_MOOSECOLUMNS_IMMUTABLE} && !$ENV{DBIC_MOOSECOLUMNS_NON_INLINABLE};
-__PACKAGE__->meta->make_immutable(inline_constructor => 0)
+__PACKAGE__->meta->make_immutable( inline_constructor => 0 )
   if $ENV{DBIC_MOOSECOLUMNS_IMMUTABLE} && !$ENV{DBIC_MOOSECOLUMNS_NON_INLINABLE};
 
 1;

@@ -4,7 +4,7 @@ use Moose ();
 use Moose::Exporter;
 use Moose::Util::MetaRole;
 
-use DBIx::Class::MooseColumns::Meta::Attribute;
+use DBIx::Class::MooseColumns::Meta::Role::Attribute;
 
 Moose::Exporter->setup_import_methods();
 
@@ -30,11 +30,11 @@ DBIx::Class::MooseColumns - Lets you write DBIC add_column() definitions as attr
 
 =head1 VERSION
 
-Version 0.12
+Version 0.13
 
 =cut
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 
 =head1 SYNOPSIS

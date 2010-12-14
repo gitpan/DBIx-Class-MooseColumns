@@ -8,7 +8,7 @@ build_requires:
   IO::All: 0.41
   MooseX::NonMoose: 0.16
   Path::Class: 0.16
-  Test::Aggregate::Nested: 0.363
+  Test::Aggregate: 0.363
   Test::DBIx::Class: 0.10
   Test::Deep: 0.103
   Test::Differences: 0.4801
@@ -34,4 +34,4 @@ requires:
 resources:
   license: http://dev.perl.org/licenses/
   repository: git://github.com/mendel/DBIx-Class-MooseColumns.git
-version: 0.15
+version: 0.16

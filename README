@@ -3,7 +3,7 @@ NAME
     as attribute options
 
 VERSION
-    Version 0.16
+    Version 0.17
 
 SYNOPSIS
       package MyApp::Schema::Result::Artist;

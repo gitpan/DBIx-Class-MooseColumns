@@ -6,7 +6,7 @@ build_requires:
   ExtUtils::MakeMaker: 6.42
   FindBin: 0
   IO::All: 0.41
-  MooseX::NonMoose: 0.16
+  MooseX::NonMoose: 0.17
   Path::Class: 0.16
   Test::Aggregate: 0.363
   Test::DBIx::Class: 0.10
@@ -34,4 +34,4 @@ requires:
 resources:
   license: http://dev.perl.org/licenses/
   repository: git://github.com/mendel/DBIx-Class-MooseColumns.git
-version: 0.17
+version: 0.18

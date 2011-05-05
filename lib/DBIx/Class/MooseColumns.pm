@@ -6,31 +6,17 @@ use Moose::Util::MetaRole;
 
 use DBIx::Class::MooseColumns::Meta::Role::Attribute;
 
-my %metaroles = (
-  class_metaroles => {
-    attribute => ['DBIx::Class::MooseColumns::Meta::Role::Attribute'],
-  },
-);
-
-if ( $Moose::VERSION >= 1.9900 ) {
-  $metaroles{role_metaroles} = {
-    applied_attribute => ['DBIx::Class::MooseColumns::Meta::Role::Attribute'],
-  };
-}
-
-Moose::Exporter->setup_import_methods(%metaroles);
-
 =head1 NAME
 
 DBIx::Class::MooseColumns - Lets you write DBIC add_column() definitions as attribute options
 
 =head1 VERSION
 
-Version 0.21
+Version 0.22
 
 =cut
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 
 =head1 SYNOPSIS
@@ -169,5 +155,19 @@ This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
 =cut
+
+my %metaroles = (
+  class_metaroles => {
+    attribute => ['DBIx::Class::MooseColumns::Meta::Role::Attribute'],
+  },
+);
+
+if ( $Moose::VERSION >= 1.9900 ) {
+  $metaroles{role_metaroles} = {
+    applied_attribute => ['DBIx::Class::MooseColumns::Meta::Role::Attribute'],
+  };
+}
+
+Moose::Exporter->setup_import_methods(%metaroles);
 
 1; # End of DBIx::Class::MooseColumns

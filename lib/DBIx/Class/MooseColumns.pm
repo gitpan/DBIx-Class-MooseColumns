@@ -6,23 +6,19 @@ use Moose::Util::MetaRole;
 
 use DBIx::Class::MooseColumns::Meta::Role::Attribute;
 
-Moose::Exporter->setup_import_methods();
+my %metaroles = (
+  class_metaroles => {
+    attribute => ['DBIx::Class::MooseColumns::Meta::Role::Attribute'],
+  },
+);
 
-sub init_meta {
-  my ($class, %args) = (shift, @_);
-
-  Moose->init_meta(%args);
-
-  Moose::Util::MetaRole::apply_metaroles(
-    for             => $args{for_class},
-    class_metaroles => {
-      attribute => ['DBIx::Class::MooseColumns::Meta::Role::Attribute'],
-    },
-  );
-
-  return $args{for_class}->meta;
+if ( $Moose::VERSION >= 1.9900 ) {
+  $metaroles{role_metaroles} = {
+    applied_attribute => ['DBIx::Class::MooseColumns::Meta::Role::Attribute'],
+  };
 }
 
+Moose::Exporter->setup_import_methods(%metaroles);
 
 =head1 NAME
 
@@ -30,11 +26,11 @@ DBIx::Class::MooseColumns - Lets you write DBIC add_column() definitions as attr
 
 =head1 VERSION
 
-Version 0.20
+Version 0.21
 
 =cut
 
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 
 
 =head1 SYNOPSIS
@@ -106,6 +102,20 @@ I<Note:> C<< __PACKAGE__->set_primary_key(...) >> and C<<
 __PACKAGE__->add_unique_constraint(...) >> calls must go B<after> the C<has>
 stanzas (since they depend on the referred columns being registered via C<<
 __PACKAGE__->add_column(...) >> and that call is done when the C<has> runs).
+
+=head1 TODO
+
+=over
+
+=item *
+
+convert the test harness to something sane - consider L<Fennec>?
+
+=item *
+
+delay ->add_column() calls until right after the ->table() call (collect the args and run them in an after method modifier of 'table', possibly batched in a single ->add_columns() call)
+
+=back
 
 =head1 SEE ALSO
 

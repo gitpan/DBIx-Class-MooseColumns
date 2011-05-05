@@ -3,7 +3,7 @@ NAME
     as attribute options
 
 VERSION
-    Version 0.20
+    Version 0.21
 
 SYNOPSIS
       package MyApp::Schema::Result::Artist;
@@ -72,6 +72,13 @@ DESCRIPTION
     stanzas (since they depend on the referred columns being registered via
     "__PACKAGE__->add_column(...)" and that call is done when the "has"
     runs).
+
+TODO
+    *   convert the test harness to something sane - consider Fennec?
+
+    *   delay ->add_column() calls until right after the ->table() call
+        (collect the args and run them in an after method modifier of
+        'table', possibly batched in a single ->add_columns() call)
 
 SEE ALSO
     DBIx::Class, Moose

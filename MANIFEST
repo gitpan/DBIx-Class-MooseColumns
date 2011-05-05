@@ -34,8 +34,11 @@ t/12-non_inlinable.t
 t/20-mutable_subclass.t
 t/21-immutable_subclass.t
 t/22-non_inlinable_subclass.t
+t/30-attr_defined_in_role.t
 t/etc/schema.pl
 t/lib/TestSchema.pm
 t/lib/TestSchema/Result.pm
 t/lib/TestSchema/Result/Artist.pm
+t/lib/TestSchema/Result/CD.pm
+t/lib/TestSchema/Role/HasTitle.pm
 t/lib/TestUtils/MakeInstanceMetaClassNonInlinableIf.pm
